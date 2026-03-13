@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Анкета — Аля</title>
+<link href="https://fonts.googleapis.com/css2?family=Philosopher:ital,wght@0,400;0,700;1,400;1,700&family=Raleway:wght@200;300;400;600;700&family=Oswald:wght@200;300;400&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --teal: #0EA5C9;
+  --violet-mid: #9333EA;
+  --yellow: #F5C842;
+  --dark: #080514;
+  --dark-3: #130D28;
+  --white: #FAFAF8;
+  --gray: rgba(250,250,248,0.45);
+  --border: rgba(124,58,237,0.25);
+}
+
+body { background: var(--dark); color: var(--white); font-family: 'Raleway', sans-serif; overflow-x: hidden; }
+.geo { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+.wrap { position: relative; z-index: 1; max-width: 860px; margin: 0 auto; padding: 0 32px 100px; }
+
+.grad { background: linear-gradient(135deg, var(--teal) 0%, var(--violet-mid) 50%, var(--yellow) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.grad-line { height: 1px; background: linear-gradient(to right, transparent, var(--teal), var(--violet-mid), var(--yellow), transparent); }
+
+/* HERO */
+.hero { min-height: 52vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; position: relative; z-index: 1; padding: 80px 40px 64px; }
+.hero::before { content: ''; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(ellipse at 20% 60%, rgba(14,165,201,0.1) 0%, transparent 55%), radial-gradient(ellipse at 80% 30%, rgba(245,200,66,0.07) 0%, transparent 50%), radial-gradient(ellipse at 50% 10%, rgba(124,58,237,0.15) 0%, transparent 60%); }
+.hero-tag { font-family: 'Oswald', sans-serif; font-size: 10px; font-weight: 300; letter-spacing: 0.5em; text-transform: uppercase; color: var(--yellow); margin-bottom: 20px; opacity: 0; animation: fadeUp 1s ease 0.2s forwards; }
+.hero-title { font-family: 'Philosopher', serif; font-size: clamp(34px, 6vw, 62px); font-weight: 700; font-style: italic; line-height: 1.1; margin-bottom: 20px; opacity: 0; animation: fadeUp 1s ease 0.4s forwards; }
+.hero-sub { font-size: 14px; font-weight: 300; color: var(--gray); max-width: 560px; line-height: 1.85; opacity: 0; animation: fadeUp 1s ease 0.6s forwards; }
+.hero-line { width: 280px; margin: 32px auto 0; opacity: 0; animation: fadeUp 1s ease 0.8s forwards; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+/* SECTIONS */
+.section { margin-top: 64px; }
+.section-label { font-family: 'Oswald', sans-serif; font-size: 9px; font-weight: 400; letter-spacing: 0.5em; text-transform: uppercase; color: var(--yellow); display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+.section-label::after { content: ''; flex: 1; height: 1px; background: linear-gradient(to right, rgba(245,200,66,0.35), transparent); max-width: 200px; }
+.section-title { font-family: 'Philosopher', serif; font-size: clamp(24px, 3.5vw, 36px); font-weight: 700; font-style: italic; margin-bottom: 28px; line-height: 1.1; }
+
+/* CARD */
+.card { background: rgba(255,255,255,0.025); border: 1px solid var(--border); border-radius: 2px; padding: 32px; margin-bottom: 16px; position: relative; }
+.card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(to right, var(--teal), var(--violet-mid), var(--yellow)); }
+
+/* QUESTIONS */
+.q-block { margin-bottom: 24px; }
+.q-block:last-child { margin-bottom: 0; }
+.q-label { display: block; font-size: 14px; font-weight: 600; color: var(--white); margin-bottom: 5px; line-height: 1.5; }
+.q-hint { display: block; font-size: 12px; font-weight: 300; color: var(--gray); font-style: italic; margin-bottom: 10px; line-height: 1.55; }
+
+textarea, input[type="text"] { width: 100%; background: rgba(255,255,255,0.04); border: 1px solid rgba(124,58,237,0.3); border-radius: 2px; padding: 12px 14px; font-family: 'Raleway', sans-serif; font-size: 13.5px; font-weight: 300; color: var(--white); outline: none; resize: vertical; transition: border-color 0.2s, box-shadow 0.2s; }
+textarea { min-height: 82px; }
+textarea.sm { min-height: 58px; }
+textarea.lg { min-height: 112px; }
+textarea::placeholder, input[type="text"]::placeholder { color: rgba(250,250,248,0.25); }
+textarea:focus, input[type="text"]:focus { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(14,165,201,0.12); }
+
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+/* PERCENT */
+.percent-wrap { display: flex; align-items: center; gap: 18px; margin-top: 8px; }
+.percent-num { font-family: 'Philosopher', serif; font-size: 42px; font-weight: 700; font-style: italic; min-width: 80px; line-height: 1; }
+.percent-wrap input[type="range"] { flex: 1; accent-color: var(--teal); cursor: pointer; }
+
+/* WHEEL */
+.wheel-outer { display: flex; flex-direction: column; align-items: center; gap: 8px; margin-bottom: 36px; }
+.wheel-canvas-label { font-family: 'Oswald', sans-serif; font-size: 9px; font-weight: 300; letter-spacing: 0.4em; text-transform: uppercase; color: var(--gray); }
+.wi-row { display: flex; align-items: center; gap: 12px; margin-bottom: 13px; }
+.wi-name { font-size: 12.5px; font-weight: 400; color: rgba(250,250,248,0.75); width: 210px; flex-shrink: 0; line-height: 1.3; }
+.wi-range { flex: 1; cursor: pointer; }
+.wi-val { font-family: 'Philosopher', serif; font-size: 18px; font-weight: 700; font-style: italic; min-width: 26px; text-align: center; flex-shrink: 0; }
+
+/* SPHERE TABLE */
+.sphere-table { width: 100%; border-collapse: collapse; }
+.sphere-table thead tr { border-bottom: 1px solid rgba(14,165,201,0.35); }
+.sphere-table th { font-family: 'Oswald', sans-serif; font-size: 9px; font-weight: 400; letter-spacing: 0.35em; text-transform: uppercase; color: var(--yellow); padding: 10px 12px; text-align: left; }
+.sphere-table td { padding: 9px 10px; vertical-align: middle; border-bottom: 1px solid rgba(124,58,237,0.1); font-size: 13px; }
+.sphere-table tr:last-child td { border-bottom: none; }
+.sphere-table td:first-child { font-weight: 600; color: var(--white); font-size: 12.5px; }
+.sphere-table td.sc { text-align: center; font-family: 'Philosopher', serif; font-size: 20px; font-style: italic; width: 50px; }
+.sphere-table td input[type="text"] { padding: 7px 10px; font-size: 12.5px; min-height: unset; }
+.sphere-table tr:hover td { background: rgba(124,58,237,0.05); }
+
+/* PHASE */
+.phase-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; margin: 10px 0 16px; }
+.phase-card { border: 1px solid var(--border); border-radius: 2px; padding: 14px 10px; text-align: center; cursor: pointer; transition: all 0.2s; position: relative; }
+.phase-card:hover { border-color: var(--violet-mid); background: rgba(147,51,234,0.08); }
+.phase-card.sel { border-color: var(--teal); background: rgba(14,165,201,0.1); }
+.phase-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; transition: background 0.2s; }
+.phase-card.sel::before { background: linear-gradient(to right, var(--teal), var(--violet-mid)); }
+.phase-icon { font-size: 22px; margin-bottom: 6px; display: block; }
+.phase-name { font-size: 11px; font-weight: 600; color: var(--white); text-transform: uppercase; letter-spacing: 0.04em; }
+.phase-days { font-size: 10px; color: var(--gray); margin-top: 2px; }
+
+/* WOMEN TOGGLE */
+.women-toggle-head { display: flex; align-items: center; gap: 12px; cursor: pointer; padding: 16px 20px; border: 1px solid var(--border); background: rgba(255,255,255,0.02); margin-top: 20px; transition: border-color 0.2s; }
+.women-toggle-head:hover { border-color: var(--teal); }
+.women-toggle-head span { font-family: 'Oswald', sans-serif; font-size: 11px; font-weight: 400; letter-spacing: 0.4em; text-transform: uppercase; color: var(--teal); flex: 1; }
+.women-arrow { font-size: 12px; color: var(--gray); transition: transform 0.3s; display: inline-block; }
+.women-arrow.open { transform: rotate(180deg); }
+
+.cycle-item { margin-bottom: 10px; }
+.cycle-item .check-item { margin-bottom: 0; }
+
+/* CHECK */
+.check-group { display: flex; flex-direction: column; gap: 10px; margin-top: 8px; }
+.check-item { display: flex; align-items: flex-start; gap: 12px; font-size: 13.5px; font-weight: 300; cursor: pointer; line-height: 1.5; color: rgba(250,250,248,0.8); }
+.check-item input { accent-color: var(--teal); width: 15px; height: 15px; flex-shrink: 0; margin-top: 2px; cursor: pointer; }
+
+/* FILM */
+.film-card { background: linear-gradient(145deg, #130D28 0%, var(--dark) 100%); border: 1px solid rgba(124,58,237,0.35); border-radius: 2px; padding: 36px; position: relative; overflow: hidden; }
+.film-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(to right, var(--teal), var(--violet-mid), var(--yellow)); }
+.film-card::after { content: ''; position: absolute; bottom: -60px; right: -60px; width: 200px; height: 200px; border-radius: 50%; background: radial-gradient(ellipse, rgba(124,58,237,0.1), transparent 70%); pointer-events: none; }
+.film-eyebrow { font-family: 'Oswald', sans-serif; font-size: 9px; font-weight: 300; letter-spacing: 0.5em; text-transform: uppercase; color: var(--yellow); margin-bottom: 24px; }
+
+/* SUBMIT */
+.submit-area { margin-top: 72px; text-align: center; padding: 56px 40px; background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 2px; position: relative; overflow: hidden; }
+.submit-area::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(to right, var(--teal), var(--violet-mid), var(--yellow)); }
+.submit-area::after { content: ''; position: absolute; bottom: -80px; left: 50%; transform: translateX(-50%); width: 400px; height: 200px; border-radius: 50%; background: radial-gradient(ellipse, rgba(124,58,237,0.1), transparent 70%); pointer-events: none; }
+.submit-p { font-size: 14px; font-weight: 300; color: var(--gray); line-height: 1.8; margin-bottom: 6px; }
+.submit-sig { font-family: 'Philosopher', serif; font-size: 26px; font-style: italic; margin: 22px 0 32px; line-height: 1.5; }
+.submit-btn { display: inline-block; padding: 16px 56px; border: none; cursor: pointer; background: linear-gradient(135deg, var(--teal), var(--violet-mid)); color: white; font-family: 'Raleway', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; border-radius: 2px; box-shadow: 0 0 32px rgba(14,165,201,0.25); transition: all 0.25s; position: relative; z-index: 1; }
+.submit-btn:hover { transform: translateY(-2px); box-shadow: 0 0 48px rgba(14,165,201,0.4); }
+.success-msg { display: none; margin-top: 24px; font-size: 14px; font-weight: 300; color: var(--teal); letter-spacing: 0.05em; }
+
+@media (max-width: 640px) {
+  .wrap { padding: 0 16px 80px; }
+  .hero { padding: 60px 20px 48px; }
+  .two-col { grid-template-columns: 1fr; }
+  .phase-grid { grid-template-columns: repeat(2,1fr); }
+  .wi-name { width: 130px; font-size: 11.5px; }
+  .card { padding: 20px; }
+}
+</style>
+</head>
+<body>
+
+<div class="geo">
+  <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <radialGradient id="g1" cx="15%" cy="55%"><stop offset="0%" stop-color="#0EA5C9" stop-opacity="0.07"/><stop offset="100%" stop-color="#0EA5C9" stop-opacity="0"/></radialGradient>
+      <radialGradient id="g2" cx="85%" cy="25%"><stop offset="0%" stop-color="#9333EA" stop-opacity="0.1"/><stop offset="100%" stop-color="#9333EA" stop-opacity="0"/></radialGradient>
+      <radialGradient id="g3" cx="55%" cy="80%"><stop offset="0%" stop-color="#F5C842" stop-opacity="0.04"/><stop offset="100%" stop-color="#F5C842" stop-opacity="0"/></radialGradient>
+    </defs>
+    <rect width="100%" height="100%" fill="url(#g1)"/>
+    <rect width="100%" height="100%" fill="url(#g2)"/>
+    <rect width="100%" height="100%" fill="url(#g3)"/>
+    <line x1="0" y1="28%" x2="100%" y2="33%" stroke="rgba(124,58,237,0.05)" stroke-width="1"/>
+    <line x1="0" y1="68%" x2="100%" y2="63%" stroke="rgba(14,165,201,0.04)" stroke-width="1"/>
+  </svg>
+</div>
+
+<div class="hero">
+  <div class="hero-tag">Программа · 10 сессий · Диагностическая анкета</div>
+  <h1 class="hero-title">Начни с главного —<br><span class="grad">с себя</span></h1>
+  <p class="hero-sub">Эффективное прохождение программы подразумевает ваше 100% участие. Отвечайте честно и спокойно — не уходите в глубокий анализ, просто будьте собой. Эта анкета поможет мне глубже понять ваш запрос и создать программу, которая приведёт к реальным изменениям.</p>
+  <div class="hero-line grad-line"></div>
+</div>
+
+<div class="wrap">
+
+  <!-- 01 -->
+  <div class="section">
+    <div class="section-label">01</div>
+    <h2 class="section-title">Основная <span class="grad">информация</span></h2>
+    <div class="card">
+      <div class="two-col" style="margin-bottom:20px;">
+        <div class="q-block"><label class="q-label">Ваше имя</label><input type="text" placeholder="Как вас зовут?"></div>
+        <div class="q-block"><label class="q-label">Чем занимаетесь?</label><input type="text" placeholder="Работа, деятельность, роль..."></div>
+      </div>
+      <div class="q-block"><label class="q-label">Что побудило обратиться именно сейчас?</label><textarea class="sm" placeholder="Что произошло, что изменилось, что наконец созрело..."></textarea></div>
+      <div class="two-col">
+        <div class="q-block"><label class="q-label">Ваше текущее состояние — одним словом</label><input type="text" placeholder="Первое, что приходит..."></div>
+        <div class="q-block"><label class="q-label">Три чувства, которые чаще всего с вами в последние недели</label><input type="text" placeholder="Тревога, усталость, надежда..."></div>
+      </div>
+      <div class="q-block">
+        <label class="q-label">На сколько % чувствуете себя реализованным в жизни прямо сейчас?</label>
+        <div class="percent-wrap">
+          <div class="percent-num grad" id="pctDisplay">50%</div>
+          <input type="range" min="0" max="100" value="50" oninput="document.getElementById('pctDisplay').textContent=this.value+'%'">
+        </div>
+      </div>
+      <div class="two-col">
+        <div class="q-block"><label class="q-label">Что даёт вам энергию?</label><textarea class="sm" placeholder="Люди, занятия, состояния..."></textarea></div>
+        <div class="q-block"><label class="q-label">Что забирает энергию?</label><textarea class="sm" placeholder="Что истощает, тянет вниз..."></textarea></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 02 КОЛЕСО -->
+  <div class="section">
+    <div class="section-label">02</div>
+    <h2 class="section-title">Колесо <span class="grad">баланса</span></h2>
+    <p style="font-size:13px;font-weight:300;color:var(--gray);margin-bottom:28px;line-height:1.7;">Оцените каждую сферу от 1 до 10. Двигайте ползунки — диаграмма строится в реальном времени.</p>
+    <div class="wheel-outer">
+      <canvas id="wheelCanvas" width="340" height="340" style="max-width:340px;width:100%;"></canvas>
+      <div class="wheel-canvas-label">Ваше колесо баланса</div>
+    </div>
+    <div class="card"><div id="sliders"></div></div>
+    <div class="card" style="margin-top:20px;overflow-x:auto;">
+      <div class="section-label" style="margin-bottom:16px;">Раскройте каждую сферу</div>
+      <table class="sphere-table">
+        <thead><tr><th>Сфера жизни</th><th style="width:50px;">Оценка</th><th>Что не так сейчас?</th><th>Как выглядит 10 из 10?</th></tr></thead>
+        <tbody id="sphereBody"></tbody>
+      </table>
+    </div>
+    <div class="card" style="margin-top:16px;">
+      <div class="q-block">
+        <label class="q-label">Что хочется улучшить в первую очередь?</label>
+        <span class="q-hint">Назовите главный запрос и 2 следующих по важности</span>
+        <textarea placeholder="1. Главный запрос...&#10;2. ...&#10;3. ..."></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- 03 ЭМОЦИИ -->
+  <div class="section">
+    <div class="section-label">03</div>
+    <h2 class="section-title">Эмоции и <span class="grad">внутренние состояния</span></h2>
+    <div class="card">
+      <div class="q-block">
+        <label class="q-label">Есть ли чувства, которые часто возвращаются и мешают двигаться вперёд?</label>
+        <span class="q-hint">Обида, вина, страх, тревога, злость, стыд — что узнаёте в себе?</span>
+        <textarea placeholder="Какие чувства и что их обычно вызывает..."></textarea>
+      </div>
+      <div class="two-col">
+        <div class="q-block"><label class="q-label">Как обычно справляетесь с этими чувствами?</label><textarea class="sm" placeholder="Что делаете, когда накрывает..."></textarea></div>
+        <div class="q-block"><label class="q-label">Что помогает чувствовать лёгкость и равновесие?</label><textarea class="sm" placeholder="Что возвращает вас к себе..."></textarea></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 04 УСТАНОВКИ -->
+  <div class="section">
+    <div class="section-label">04</div>
+    <h2 class="section-title">Мысли и <span class="grad">установки</span></h2>
+    <div class="card">
+      <div class="q-block"><label class="q-label">Что обычно говорите себе, когда сталкиваетесь с трудностями?</label><textarea class="sm" placeholder="Внутренний диалог в сложные моменты..."></textarea></div>
+      <div class="q-block">
+        <label class="q-label">Какие убеждения о себе, о деньгах или о любви вы усвоили от родителей, близких или общества?</label>
+        <span class="q-hint">Не анализируйте — просто что всплывает. Что вам внушали о том, кто вы, чего заслуживаете, как устроен мир?</span>
+        <textarea class="lg" placeholder="О себе: ...&#10;О деньгах: ...&#10;О любви и отношениях: ...&#10;Из общества / среды: ..."></textarea>
+      </div>
+      <div class="two-col">
+        <div class="q-block"><label class="q-label">Внутренний голос, который ограничивает — что он говорит?</label><textarea class="sm" placeholder="«Ты не можешь...», «Ты должен/должна...»"></textarea></div>
+        <div class="q-block"><label class="q-label">Какая мысль, наоборот, придаёт вам силы?</label><textarea class="sm" placeholder="То, что поднимает и держит..."></textarea></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 05 ТЕЛО -->
+  <div class="section">
+    <div class="section-label">05</div>
+    <h2 class="section-title">Тело и <span class="grad">энергия</span></h2>
+    <div class="card">
+      <div class="q-block"><label class="q-label">Как чувствуете своё тело прямо сейчас?</label><textarea class="sm" placeholder="Напряжение, лёгкость, усталость, боль..."></textarea></div>
+      <div class="two-col">
+        <div class="q-block"><label class="q-label">Зоны в теле, где есть застой, боль или тяжесть?</label><input type="text" placeholder="Голова, грудь, живот, горло..."></div>
+        <div class="q-block"><label class="q-label">Что помогает расслабляться и наполняться?</label><textarea class="sm" placeholder="Практики, занятия, места..."></textarea></div>
+      </div>
+      <div class="q-block"><label class="q-label">Что хотели бы изменить в ощущении себя в теле?</label><textarea class="sm" placeholder="Желания, образ себя..."></textarea></div>
+      <div class="q-block">
+        <label class="q-label">Как у вас со сном?</label>
+        <div class="check-group">
+          <label class="check-item"><input type="checkbox"> Сложно засыпаю — мысли не останавливаются</label>
+          <label class="check-item"><input type="checkbox"> Просыпаюсь ночью и сложно снова уснуть</label>
+          <label class="check-item"><input type="checkbox"> Встаю уже уставшим(ей)</label>
+          <label class="check-item"><input type="checkbox"> Сплю хорошо, высыпаюсь</label>
+          <label class="check-item"><input type="checkbox"> Другое: <input type="text" style="display:inline;width:200px;padding:3px 8px;font-size:13px;" placeholder="напишите своё..."></label>
+        </div>
+      </div>
+      <div class="q-block">
+        <label class="q-label">Есть ли особые паттерны в еде?</label>
+        <div class="check-group">
+          <label class="check-item"><input type="checkbox"> Тяга к сладкому / углеводам в стрессе</label>
+          <label class="check-item"><input type="checkbox"> Переедание или заедание эмоций</label>
+          <label class="check-item"><input type="checkbox"> Забываю есть, нет аппетита</label>
+          <label class="check-item"><input type="checkbox"> Хочу изменить вес / фигуру</label>
+          <label class="check-item"><input type="checkbox"> Проблемы с пищеварением (вздутие, тяжесть)</label>
+          <label class="check-item"><input type="checkbox"> Отношения с едой гармоничные</label>
+          <label class="check-item"><input type="checkbox"> Другое: <input type="text" style="display:inline;width:200px;padding:3px 8px;font-size:13px;" placeholder="напишите своё..."></label>
+        </div>
+      </div>
+      <div class="q-block">
+        <label class="q-label">Как с иммунитетом и физическим здоровьем?</label>
+        <div class="check-group">
+          <label class="check-item"><input type="checkbox"> Часто болею / простужаюсь</label>
+          <label class="check-item"><input type="checkbox"> Хронические симптомы (аллергии, головные боли, кожа...)</label>
+          <label class="check-item"><input type="checkbox"> Гормональные нарушения / сбои</label>
+          <label class="check-item"><input type="checkbox"> В целом здоров(а), серьёзных жалоб нет</label>
+          <label class="check-item"><input type="checkbox"> Другое: <input type="text" style="display:inline;width:200px;padding:3px 8px;font-size:13px;" placeholder="напишите своё..."></label>
+        </div>
+      </div>
+      <div class="q-block"><label class="q-label">Есть ли что-то в физическом состоянии, что особенно беспокоит прямо сейчас?</label><textarea class="sm" placeholder="Симптомы, которые повторяются или тянутся давно..."></textarea></div>
+    </div>
+  </div>
+
+  <!-- 06 ОТНОШЕНИЯ -->
+  <div class="section">
+    <div class="section-label">06</div>
+    <h2 class="section-title">Отношения и <span class="grad">близость</span></h2>
+    <div class="card">
+      <div class="q-block"><label class="q-label">Расскажите о своих ключевых отношениях — партнёр, семья, близкие. Как себя в них чувствуете?</label><textarea class="lg" placeholder="Что есть, чего не хватает, что болит..."></textarea></div>
+      <div class="q-block"><label class="q-label">Есть ли люди, рядом с которыми становится хуже — тяжелее, меньше?</label><textarea class="sm" placeholder="Кто это, как это проявляется..."></textarea></div>
+      <div class="q-block">
+        <label class="q-label">Ваш типичный паттерн в отношениях?</label>
+        <span class="q-hint">Угождаете, контролируете, замыкаетесь, избегаете конфликтов, быстро сближаетесь...</span>
+        <textarea class="sm" placeholder="Мой стиль в отношениях..."></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- 07 ЦИКЛИЧНОСТЬ -->
+  <div class="section">
+    <div class="section-label">07</div>
+    <h2 class="section-title">Цикличность и <span class="grad">ритм жизни</span></h2>
+    <div class="card">
+      <div class="q-block">
+        <label class="q-label">Замечаете ли вы в своей жизни цикличность — повторяющиеся ритмы активности и спада?</label>
+        <span class="q-hint">Не обязательно осознавать это глубоко — просто что замечаете?</span>
+        <div class="check-group" style="margin-bottom:14px;">
+          <div class="cycle-item">
+            <label class="check-item"><input type="checkbox" onchange="toggleCycle(this)"> Годовой ритм — есть сезоны подъёма и спада (например, летом активнее)</label>
+            <textarea class="sm cycle-field" style="display:none;margin-top:8px;margin-left:27px;" placeholder="Как это у вас? Какие сезоны активные, какие — на восстановление..."></textarea>
+          </div>
+          <div class="cycle-item">
+            <label class="check-item"><input type="checkbox" onchange="toggleCycle(this)"> Месячный ритм — замечаю повторяющиеся паттерны каждый месяц</label>
+            <textarea class="sm cycle-field" style="display:none;margin-top:8px;margin-left:27px;" placeholder="Что повторяется? Начало месяца, конец, середина — как это проявляется..."></textarea>
+          </div>
+          <div class="cycle-item">
+            <label class="check-item"><input type="checkbox" onchange="toggleCycle(this)"> Лунный цикл — чувствую влияние луны на состояние и энергию</label>
+            <textarea class="sm cycle-field" style="display:none;margin-top:8px;margin-left:27px;" placeholder="Что замечаете — полнолуние, новолуние? Как это влияет на вас..."></textarea>
+          </div>
+          <div class="cycle-item">
+            <label class="check-item"><input type="checkbox" onchange="toggleCycle(this)"> Недельный ритм — есть «свои» дни для работы, отдыха, общения</label>
+            <textarea class="sm cycle-field" style="display:none;margin-top:8px;margin-left:27px;" placeholder="Какие дни для чего? Когда больше энергии, когда хочется тишины..."></textarea>
+          </div>
+          <div class="cycle-item">
+            <label class="check-item"><input type="checkbox" onchange="toggleCycle(this)"> Суточный ритм — чётко знаю своё время продуктивности</label>
+            <textarea class="sm cycle-field" style="display:none;margin-top:8px;margin-left:27px;" placeholder="Жаворонок или сова? Когда пик энергии, когда спад..."></textarea>
+          </div>
+          <label class="check-item"><input type="checkbox"> Пока не замечал(а) никаких циклов</label>
+        </div>
+      </div>
+      <div class="q-block"><label class="q-label">В какое время года / месяца / суток чувствуете себя наиболее живым(ой) и продуктивным(ой)?</label><textarea class="sm" placeholder="Например: осенью больше энергии, утром пишу лучше всего, в начале месяца больше решимости..."></textarea></div>
+      <div class="q-block"><label class="q-label">Используете ли знания о своих ритмах в планировании — работы, отдыха, важных решений?</label><textarea class="sm" placeholder="Как это выглядит на практике, или почему пока нет..."></textarea></div>
+      <div class="q-block"><label class="q-label">Есть ли периоды, которые регулярно даются тяжело? Что вы о них знаете?</label><textarea class="sm" placeholder="Когда накрывает, что помогает, что усугубляет..."></textarea></div>
+    </div>
+
+    <!-- ЖЕНСКИЙ БЛОК -->
+    <div class="women-toggle-head" onclick="toggleWomen()">
+      <span>♀ &nbsp; Дополнительный блок для женщин</span>
+      <div class="women-arrow" id="womenArrow">▼</div>
+    </div>
+    <div id="womenBlock" style="display:none;">
+      <div class="card" style="border-top:none;">
+        <div class="q-block">
+          <label class="q-label">Знаете ли вы свой менструальный цикл и его четыре фазы?</label>
+          <div class="check-group">
+            <label class="check-item"><input type="checkbox"> Да, хорошо знаю и живу в ритме цикла</label>
+            <label class="check-item"><input type="checkbox"> Знаю в общих чертах, иногда учитываю</label>
+            <label class="check-item"><input type="checkbox"> Слышала, но не применяю</label>
+            <label class="check-item"><input type="checkbox"> Нет, для меня это новая тема</label>
+          </div>
+        </div>
+        <div class="q-block" style="margin-top:20px;">
+          <label class="q-label">В какой фазе цикла вы сейчас находитесь?</label>
+          <span class="q-hint">Нажмите на фазу или оставьте пустым, если не знаете</span>
+          <div class="phase-grid">
+            <div class="phase-card" onclick="selPhase(this)"><span class="phase-icon">🌑</span><div class="phase-name">Менструация</div><div class="phase-days">Дни 1–5</div></div>
+            <div class="phase-card" onclick="selPhase(this)"><span class="phase-icon">🌒</span><div class="phase-name">Фолликулярная</div><div class="phase-days">Дни 6–13</div></div>
+            <div class="phase-card" onclick="selPhase(this)"><span class="phase-icon">🌕</span><div class="phase-name">Овуляция</div><div class="phase-days">Дни 14–16</div></div>
+            <div class="phase-card" onclick="selPhase(this)"><span class="phase-icon">🌘</span><div class="phase-name">Лютеиновая</div><div class="phase-days">Дни 17–28</div></div>
+          </div>
+        </div>
+        <div class="q-block"><label class="q-label">Планируете ли работу, встречи и задачи относительно своего цикла?</label><textarea class="sm" placeholder="Как используете знания о цикле в планировании..."></textarea></div>
+        <div class="q-block">
+          <label class="q-label">Как чувствуете себя в разные фазы? Что замечаете?</label>
+          <span class="q-hint">Энергия, настроение, продуктивность, тело, желания...</span>
+          <textarea placeholder="В менструацию: ...&#10;В фолликулярную: ...&#10;В овуляцию: ...&#10;В лютеиновую: ..."></textarea>
+        </div>
+        <div class="q-block"><label class="q-label">Есть ли фазы, которые даются тяжело? Как это влияет на жизнь?</label><textarea class="sm" placeholder="ПМС, перепады настроения, боли — что происходит, как справляетесь..."></textarea></div>
+        <div class="q-block"><label class="q-label">Знает ли ваш партнёр о вашем цикле? Учитывает ли это в отношениях?</label><textarea class="sm" placeholder="Как это устроено между вами..."></textarea></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 08 ВИДЕНИЕ -->
+  <div class="section">
+    <div class="section-label">08</div>
+    <h2 class="section-title">Видение и <span class="grad">результат</span></h2>
+    <div class="card">
+      <div class="q-block">
+        <label class="q-label">Какой результат хотите получить после 10 сессий?</label>
+        <span class="q-hint">Представьте, что вы уже там — как изменилась жизнь, тело, отношения, финансы, ощущение себя?</span>
+        <textarea class="lg" placeholder="Опишите как можно конкретнее и живее..."></textarea>
+      </div>
+      <div class="two-col">
+        <div class="q-block"><label class="q-label">Какие шаги готовы сделать ради этого?</label><textarea class="sm" placeholder="Что готовы вложить — время, усилия, смелость..."></textarea></div>
+        <div class="q-block"><label class="q-label">Что может помешать? Что поддержит?</label><textarea class="sm" placeholder="Честно о препятствиях и ресурсах..."></textarea></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 09 ОПЫТ -->
+  <div class="section">
+    <div class="section-label">09</div>
+    <h2 class="section-title">Опыт <span class="grad">личной работы</span></h2>
+    <div class="card">
+      <div class="q-block">
+        <label class="q-label">С чем уже работали?</label>
+        <div class="check-group">
+          <label class="check-item"><input type="checkbox"> Психотерапия / психология</label>
+          <label class="check-item"><input type="checkbox"> Коучинг</label>
+          <label class="check-item"><input type="checkbox"> Тетахилинг</label>
+          <label class="check-item"><input type="checkbox"> Расстановки (семейные, системные)</label>
+          <label class="check-item"><input type="checkbox"> Телесные практики (йога, дыхание, соматика)</label>
+          <label class="check-item"><input type="checkbox"> Медитация / осознанность</label>
+          <label class="check-item"><input type="checkbox"> Астрология / нумерология / другие практики</label>
+          <label class="check-item"><input type="checkbox"> Нет опыта — это первый раз</label>
+        </div>
+      </div>
+      <div class="q-block" style="margin-top:20px;"><label class="q-label">Что в предыдущей работе помогало? Что — нет?</label><textarea class="sm" placeholder="Что резонировало, а что оставляло без изменений..."></textarea></div>
+      <div class="q-block"><label class="q-label">Есть ли темы или области, к которым пока не готовы прикасаться?</label><textarea class="sm" placeholder="Ваши границы — важно знать заранее..."></textarea></div>
+    </div>
+  </div>
+
+  <!-- 10 ПОДСОЗНАНИЕ -->
+  <div class="section">
+    <div class="section-label">10</div>
+    <h2 class="section-title">Подсознательный <span class="grad">уровень</span></h2>
+    <div class="film-card">
+      <div class="film-eyebrow">✦ По ощущениям · Не анализируйте</div>
+      <div class="q-block"><label class="q-label">Если бы ваша жизнь была фильмом — как называлась бы текущая глава?</label><input type="text" placeholder="Название главы..."></div>
+      <div class="q-block"><label class="q-label">А как называлась бы следующая?</label><input type="text" placeholder="Та, куда хочется прийти..."></div>
+      <div class="two-col">
+        <div class="q-block"><label class="q-label">Какой урок сейчас проходите?</label><textarea class="sm" placeholder="По ощущениям..."></textarea></div>
+        <div class="q-block"><label class="q-label">Чему душа хочет научиться на этом этапе?</label><textarea class="sm" placeholder="Что просится из глубины..."></textarea></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 11 ФИНАЛ -->
+  <div class="section">
+    <div class="section-label">11</div>
+    <h2 class="section-title">Напоследок — <span class="grad">прежде чем начнём</span></h2>
+    <div class="card">
+      <div class="q-block"><label class="q-label">Что вам важно, чтобы я знала о вас, прежде чем мы начнём?</label><textarea placeholder="Любой контекст, который поможет нашей работе быть точнее..."></textarea></div>
+      <div class="two-col">
+        <div class="q-block"><label class="q-label">Какая поддержка вам особенно помогает?</label><textarea class="sm" placeholder="Мягкость, прямота, структура, свобода..."></textarea></div>
+        <div class="q-block"><label class="q-label">Одним словом — чего хотите от этой программы?</label><input type="text" placeholder="Одно слово..."></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUBMIT -->
+  <div class="submit-area">
+    <p class="submit-p">Благодарю за активное соучастие — вы уже сделали важный шаг.</p>
+    <p class="submit-p">Я изучу ваши ответы до нашей первой встречи, чтобы мы начали точно и глубоко.</p>
+    <div class="submit-sig">
+      <span class="grad">Всё наилучшим и наивысшим образом.</span><br>
+      <span style="font-size:20px;opacity:0.6;font-family:'Philosopher',serif;font-style:italic;">Аля</span>
+    </div>
+    <button class="submit-btn" onclick="handleSubmit()">Отправить анкету</button>
+    <div class="success-msg" id="successMsg">✦ &nbsp; Всё себе — и этот шаг тоже. До скорой встречи. &nbsp; ✦</div>
+  </div>
+
+</div>
+
+<script>
+const spheres = [
+  { key: 'health',  label: 'Здоровье и энергия' },
+  { key: 'family',  label: 'Семейные отношения' },
+  { key: 'partner', label: 'Отношения с партнёром' },
+  { key: 'social',  label: 'Отношения с окружающими' },
+  { key: 'finance', label: 'Финансы и изобилие' },
+  { key: 'career',  label: 'Бизнес / работа / реализация' },
+  { key: 'hobbies', label: 'Хобби, спорт и другие сферы' },
+  { key: 'rest',    label: 'Отдых и радости жизни' },
+  { key: 'self',    label: 'Ощущение себя' },
+];
+const colors = ['#0EA5C9','#2A9FD4','#5580D4','#7C3AED','#9333EA','#A840D4','#C04EAA','#C96070','#C99040'];
+const vals = {};
+spheres.forEach(s => vals[s.key] = 5);
+
+// Sliders
+const slidersEl = document.getElementById('sliders');
+spheres.forEach((s, i) => {
+  const div = document.createElement('div');
+  div.className = 'wi-row';
+  div.innerHTML = `<div class="wi-name">${s.label}</div><input class="wi-range" type="range" min="1" max="10" value="5" style="accent-color:${colors[i]}" oninput="onSlider('${s.key}',this.value)"><div class="wi-val" id="val_${s.key}" style="color:${colors[i]}">5</div>`;
+  slidersEl.appendChild(div);
+});
+
+// Table
+const tbody = document.getElementById('sphereBody');
+spheres.forEach((s, i) => {
+  const tr = document.createElement('tr');
+  tr.innerHTML = `<td>${s.label}</td><td class="sc" id="sc_${s.key}" style="color:${colors[i]}">5</td><td><input type="text" placeholder="Что не так..."></td><td><input type="text" placeholder="Идеальная картина..."></td>`;
+  tbody.appendChild(tr);
+});
+
+function onSlider(key, v) {
+  vals[key] = parseInt(v);
+  document.getElementById('val_' + key).textContent = v;
+  document.getElementById('sc_' + key).textContent = v;
+  drawWheel();
+}
+
+// Wheel
+const canvas = document.getElementById('wheelCanvas');
+const ctx = canvas.getContext('2d');
+
+function drawWheel() {
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0, 0, W, H);
+  const cx = W/2, cy = H/2, maxR = W/2 - 42;
+  const n = spheres.length, step = (Math.PI * 2) / n;
+
+  for (let r = 1; r <= 10; r++) {
+    ctx.beginPath();
+    for (let i = 0; i < n; i++) {
+      const a = i*step - Math.PI/2, rad = (r/10)*maxR;
+      i===0 ? ctx.moveTo(cx+rad*Math.cos(a), cy+rad*Math.sin(a)) : ctx.lineTo(cx+rad*Math.cos(a), cy+rad*Math.sin(a));
+    }
+    ctx.closePath();
+    ctx.strokeStyle = r%5===0 ? 'rgba(124,58,237,0.28)' : 'rgba(124,58,237,0.09)';
+    ctx.lineWidth = r%5===0 ? 1.2 : 0.7; ctx.stroke();
+  }
+
+  for (let i = 0; i < n; i++) {
+    const a = i*step - Math.PI/2;
+    ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx+maxR*Math.cos(a), cy+maxR*Math.sin(a));
+    ctx.strokeStyle = 'rgba(124,58,237,0.14)'; ctx.lineWidth = 1; ctx.stroke();
+  }
+
+  ctx.beginPath();
+  spheres.forEach((s,i) => {
+    const a = i*step-Math.PI/2, rad = (vals[s.key]/10)*maxR;
+    i===0 ? ctx.moveTo(cx+rad*Math.cos(a), cy+rad*Math.sin(a)) : ctx.lineTo(cx+rad*Math.cos(a), cy+rad*Math.sin(a));
+  });
+  ctx.closePath();
+  const g = ctx.createRadialGradient(cx,cy,0,cx,cy,maxR);
+  g.addColorStop(0,'rgba(14,165,201,0.52)'); g.addColorStop(0.5,'rgba(147,51,234,0.32)'); g.addColorStop(1,'rgba(245,200,66,0.12)');
+  ctx.fillStyle = g; ctx.fill();
+  ctx.strokeStyle = 'rgba(14,165,201,0.85)'; ctx.lineWidth = 2; ctx.stroke();
+
+  spheres.forEach((s,i) => {
+    const a = i*step-Math.PI/2, rad = (vals[s.key]/10)*maxR;
+    const x = cx+rad*Math.cos(a), y = cy+rad*Math.sin(a);
+    ctx.beginPath(); ctx.arc(x,y,5,0,Math.PI*2);
+    ctx.fillStyle = colors[i]; ctx.fill();
+    ctx.strokeStyle = 'rgba(14,165,201,0.2)'; ctx.lineWidth = 4; ctx.stroke();
+  });
+
+  const shorts = ['Здоровье','Семья','Партнёр','Общение','Финансы','Карьера','Хобби','Отдых','Я'];
+  ctx.font = '600 9.5px Raleway, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  spheres.forEach((s,i) => {
+    const a = i*step-Math.PI/2, lr = maxR+24;
+    ctx.fillStyle = 'rgba(250,250,248,0.5)';
+    ctx.fillText(shorts[i], cx+lr*Math.cos(a), cy+lr*Math.sin(a));
+  });
+}
+drawWheel();
+
+function toggleCycle(cb) {
+  const field = cb.closest('.cycle-item').querySelector('.cycle-field');
+  if (field) field.style.display = cb.checked ? 'block' : 'none';
+}
+
+function toggleWomen() {
+  const block = document.getElementById('womenBlock');
+  const arrow = document.getElementById('womenArrow');
+  const isOpen = block.style.display !== 'none';
+  block.style.display = isOpen ? 'none' : 'block';
+  arrow.classList.toggle('open', !isOpen);
+}
+
+function selPhase(el) {
+  el.closest('.phase-grid').querySelectorAll('.phase-card').forEach(c => c.classList.remove('sel'));
+  el.classList.add('sel');
+}
+
+function handleSubmit() {
+  const btn = document.querySelector('.submit-btn');
+  btn.textContent = 'Отправляю...';
+  btn.disabled = true;
+
+  // Собираем все ответы
+  const data = {};
+  document.querySelectorAll('input[type="text"], textarea').forEach((el, i) => {
+    const label = el.closest('.q-block')?.querySelector('.q-label')?.textContent?.trim();
+    if (label && el.value.trim()) data[label] = el.value.trim();
+  });
+
+  // Чекбоксы
+  document.querySelectorAll('.check-item input[type="checkbox"]:checked').forEach(cb => {
+    const text = cb.parentElement.textContent.trim().replace(/\s+/g,' ');
+    data['Отмечено: ' + text.slice(0,60)] = 'да';
+  });
+
+  // Колесо баланса
+  const sphereNames = ['Здоровье','Семья','Партнёр','Общение','Финансы','Карьера','Хобби','Отдых','Я'];
+  const keys = ['health','family','partner','social','finance','career','hobbies','rest','self'];
+  keys.forEach((k,i) => { data['Колесо — ' + sphereNames[i]] = vals[k] + '/10'; });
+
+  fetch('https://formspree.io/f/myknpgbj', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+    body: JSON.stringify(data)
+  })
+  .then(r => r.json())
+  .then(res => {
+    if (res.ok || res.next) {
+      document.getElementById('successMsg').style.display = 'block';
+      btn.style.display = 'none';
+      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    } else {
+      btn.textContent = 'Отправить анкету';
+      btn.disabled = false;
+      alert('Что-то пошло не так. Попробуйте ещё раз.');
+    }
+  })
+  .catch(() => {
+    btn.textContent = 'Отправить анкету';
+    btn.disabled = false;
+    alert('Ошибка соединения. Проверьте интернет и попробуйте снова.');
+  });
+}
+</script>
+</body>
+</html>
